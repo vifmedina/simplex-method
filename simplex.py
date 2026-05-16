@@ -3,7 +3,6 @@ from tkinter import ttk, messagebox
 
 from scipy.optimize import linprog
 
-
 class SimplexGUI:
     def __init__(self, root):
         self.root = root
@@ -119,7 +118,12 @@ class SimplexGUI:
 
             self.constraint_rows.append((entries, op, rhs))
 
-        ttk.Button(self.form_frame, text="Resolver", command=self._solve).pack(pady=10)
+        buttons_frame = ttk.Frame(self.form_frame)
+        buttons_frame.pack(pady=10)
+
+        ttk.Button(buttons_frame, text="Resolver", command=self._solve).pack(side="left", padx=5)
+
+        ttk.Button(buttons_frame, text="Limpar campos", command=self._clear_fields).pack(side="left", padx=5)
 
         self.result_label.config(text="—", foreground="black")
 
@@ -186,6 +190,26 @@ class SimplexGUI:
                 text=f"Não foi possível encontrar solução.\n{result.message}",
                 foreground="#b00020",
             )
+
+    # ------------------------------------------------------------------
+    # APAGAR CAMPOS
+    # ------------------------------------------------------------------
+    def _clear_fields(self):
+        for entry in self.obj_entries:
+            entry.delete(0, tk.END)
+            entry.insert(0, "0")
+
+        for entries, op, rhs in self.constraint_rows:
+            for entry in entries:
+                entry.delete(0, tk.END)
+                entry.insert(0, "0")
+
+            op.current(0)
+
+            rhs.delete(0, tk.END)
+            rhs.insert(0, "0")
+
+        self.result_label.config(text="—", foreground="black")
 
 
 def main():
